@@ -5,6 +5,8 @@ from sklearn import datasets
 from scipy import ndimage
 import cv2
 
+import helper
+
 
 class Dataset:
     
@@ -35,14 +37,26 @@ class Dataset:
         zip_ref.close()
 
     def extract(self, resize=False, size_x=None, size_y=None):
+
+        # parcour l'arboressence du dataset
         for directory in os.listdir(self.dataset_path):
             class_id = str(directory)
             for img_file in os.listdir(self.dataset_path +
                                        "/" + directory):
 
+                # On vérifie que l'image n'est pas le csv de description de la classe
                 if img_file.split('.')[1] == 'csv':
                     continue
+
+                # extraction des données de l'image
                 img = cv2.imread(self.dataset_path + "/" + directory
-                                 + "/" + img_file)
+                                 + "/" + img_file, cv2.IMREAD_COLOR)
+
+                # On convertie l'image pour n'avoir qu'une valeur par pixle au lieu d'un triplet
+                img = helper.img_to_rgb(img)
+
+                # Ajout de l'image au dataset
                 self.data.append(img)
+
+                # Ajout de la classe de l'image au dataset
                 self.label.append(class_id)
