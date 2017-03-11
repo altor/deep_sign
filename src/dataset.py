@@ -40,7 +40,7 @@ class Dataset:
 
         # parcour l'arboressence du dataset
         for directory in os.listdir(self.dataset_path):
-            class_id = str(directory)
+            class_id = int(directory)
             for img_file in os.listdir(self.dataset_path +
                                        "/" + directory):
 
