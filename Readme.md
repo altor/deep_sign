@@ -1,3 +1,7 @@
+WORK IN PROGRESS
+
+---------------------------------------------
+
 Adaptation de l'architecture LeNet pour classifier des panneaux de signalisations de la base GTSRB (http://benchmark.ini.rub.de/)
 
 Utilisation de la bibliothèque Keras, sur-couche à Theano
