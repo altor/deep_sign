@@ -4,6 +4,7 @@ import urllib.request as urllib
 from sklearn import datasets
 from scipy import ndimage
 import cv2
+import numpy as np
 
 import helper
 
@@ -11,7 +12,7 @@ import helper
 class Dataset:
     
     def __init__(self):
-        self.dataset_path='../GTSRB_min_1/Final_Training/Images'
+        self.dataset_path='../GTSRB/Final_Training/Images'
         self.dataset_url='http://benchmark.ini.rub.de/Dataset/GTSRB_Final_Training_Images.zip'
         self.dataset_zip_file_name = '../GTSRB_Final_Training_Images.zip'
         self.data = []
@@ -20,6 +21,13 @@ class Dataset:
         # Téléchargement de l'ensemble s'il n'existe pas
         if(not os.access(self.dataset_path, os.R_OK)):
             self.download()
+
+        # chargement des données en mémoire
+        self.load()
+
+        # conversion en ndArray
+        self.data = np.asarray(self.data)
+        self.label = np.asarray(self.label)
 
     def download():
         u = urllib.urlopen(dataset_url)
@@ -36,7 +44,7 @@ class Dataset:
         zip_ref.extractall("./")
         zip_ref.close()
 
-    def extract(self, resize=False, size_x=None, size_y=None):
+    def load(self, resize=False, size_x=None, size_y=None):
 
         # parcour l'arboressence du dataset
         for directory in os.listdir(self.dataset_path):

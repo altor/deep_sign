@@ -14,16 +14,30 @@ import argparse
 import cv2
 from dataset import Dataset
 
+ap = argparse.ArgumentParser()
+ap.add_argument("-s", "--save-model", type=int, default=-1,
+                help="(optional) whether or not model should be saved to disk")
+ap.add_argument("-l", "--load-model", type=int, default=-1,
+	        help="(optional) whether or not pre-trained model should be loaded")
+ap.add_argument("-w", "--weights", type=str,
+	        help="(optional) path to weights file")
+args = vars(ap.parse_args())
+
+
 dataset = Dataset()
 
 # Séparation des ensembles d'apprentissage et de validations
+data = dataset.data[:, np.newaxis, :, :]
 (trainData, testData, trainLabels, testLabels) = train_test_split(
-	dataset.data, dataset.label, test_size=0.33)
+	data / (65536 * 255), dataset.label.astype("int"), test_size=0.33)
+
+trainLabels = np_utils.to_categorical(trainLabels, 43)
+testLabels = np_utils.to_categorical(testLabels, 43)
 
 # initialize the optimizer and model
 print("[INFO] compiling model...")
 opt = SGD(lr=0.01)
-model = LeNet.build(width=28, height=28, depth=1, classes=10,
+model = LeNet.build(width=28, height=28, depth=1, classes=43,
 	weightsPath=args["weights"] if args["load_model"] > 0 else None)
 model.compile(loss="categorical_crossentropy", optimizer=opt,
 	metrics=["accuracy"])
