@@ -5,13 +5,13 @@
 # import the necessary packages
 from lenet import LeNet
 from sklearn.cross_validation import train_test_split
-# from sklearn import datasets
 from keras.optimizers import SGD
 from keras.utils import np_utils
 from scipy import ndimage
 import numpy as np
 import argparse
 import cv2
+import helper
 from dataset import Dataset
 
 ap = argparse.ArgumentParser()
@@ -46,7 +46,7 @@ model.compile(loss="categorical_crossentropy", optimizer=opt,
 # pre-existing model
 if args["load_model"] < 0:
 	print("[INFO] training...")
-	model.fit(trainData, trainLabels, batch_size=128, nb_epoch=20,
+	model.fit(trainData, trainLabels, batch_size=128, nb_epoch=2,
 		verbose=1)
 
 	# show the accuracy on the testing set
@@ -66,6 +66,14 @@ for i in np.random.choice(np.arange(0, len(testLabels)), size=(10,)):
 	probs = model.predict(testData[np.newaxis, i])
 	prediction = probs.argmax(axis=1)
 
+
+	image = (helper.rgb_to_img(testData[i][0] * 255 * 65536)).astype("uint8")
+	image = cv2.resize(image, (96, 96), interpolation=cv2.INTER_LINEAR)
+	cv2.putText(image, str(prediction[0]), (5, 20),
+		cv2.FONT_HERSHEY_SIMPLEX, 0.75, (0, 255, 0), 2)
+        
 	# show the image and prediction
 	print("[INFO] Predicted: {}, Actual: {}".format(prediction[0],
 		np.argmax(testLabels[i])))
+	cv2.imshow("Digit", image)
+	cv2.waitKey(0)
