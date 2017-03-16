@@ -8,7 +8,8 @@ Utilisation de la bibliothèque Keras, sur-couche à Theano
 
 L'implantation initiale de LeNet provient de cet article : http://www.pyimagesearch.com/2016/08/01/lenet-convolutional-neural-network-in-python/
 
-schéma de l'architecture : ![architecture](./arch.png)
+# Schéma de l'architecture
+![architecture](./arch.png)
 
 # A Faire
 
