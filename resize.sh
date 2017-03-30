@@ -1,6 +1,6 @@
 
 
-root="GTSRB/Final_Training/Images"
+root="GTSRB_min_28/Final_Training/Images"
 for directory in $(ls $root)
 do
     for img in $(ls $root/$directory)

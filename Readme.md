@@ -8,6 +8,13 @@ Utilisation de la bibliothèque Keras, sur-couche à Theano
 
 L'implantation initiale de LeNet provient de cet article : http://www.pyimagesearch.com/2016/08/01/lenet-convolutional-neural-network-in-python/
 
+# Dépendance
+- opencv
+- keras/Theano
+- numpy
+- h5py
+
+
 # Schéma de l'architecture
 ![architecture](./arch.png)
 
@@ -21,7 +28,7 @@ L'implantation initiale de LeNet provient de cet article : http://www.pyimagesea
 - [*] scale the data to the range [0, 1.0] ?????
 - [ ] pourquoi ???
 - [*] séparer les données en ensemble d'entraînement et ensemble de validation
-- [ ] enregistrer les données sur le disque pour éviter le pré-traitement
+- [*] enregistrer les données sur le disque pour éviter le pré-traitement (h5py)
 
 ## Performance du script de chargement
 - [ ] conversion des images (triplet -> int) 

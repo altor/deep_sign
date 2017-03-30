@@ -19,12 +19,12 @@ class LeNet:
                 model = Sequential()
 
 		# first set of CONV => RELU => POOL
-                # la première couche est composé de 20 filtres de convolutions de taille 5x5
+                # la premiere couche est compose de 20 filtres de convolutions de taille 5x5
                 model.add(Convolution2D(20, 5, 5, border_mode="same",
 			                input_shape=(depth, height, width)))
                 # fonction d'activation = relu
                 model.add(Activation("relu"))
-                # couche de max-pooling, taille des fenêtres : 2x2, pas de déplacement de la fenêtre (stride) : 2x2
+                # couche de max-pooling, taille des fenetres : 2x2, pas de deplacement de la fenetre (stride) : 2x2
                 model.add(MaxPooling2D(pool_size=(2, 2), strides=(2, 2)))
 
 		# second set of CONV => RELU => POOL
@@ -35,12 +35,12 @@ class LeNet:
 		# set of FC => RELU layers
                 # ajout d'une "couche" permetant de transformer la sortie de la couche de max-pooling en un unique vecteur
                 model.add(Flatten())
-                # couche de 500 neurones complétement connecté avec fonction d'activation relu
+                # couche de 500 neurones completement connecte avec fonction d'activation relu
                 model.add(Dense(500))
                 model.add(Activation("relu"))
 
 		# softmax classifier
-                # couche de neurone complétement connecté avec autant de neurones que de classes
+                # couche de neurone completement connecte avec autant de neurones que de classes
                 model.add(Dense(classes))
                 model.add(Activation("softmax"))
 
