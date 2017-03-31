@@ -12,7 +12,7 @@ import numpy as np
 import argparse
 import cv2
 import helper
-from dataset import Dataset
+import dataset 
 
 ap = argparse.ArgumentParser()
 ap.add_argument("-e", "--epochs", type=int, default=20,
@@ -28,7 +28,7 @@ ap.add_argument("-w", "--weights", type=str,
 args = vars(ap.parse_args())
 
 
-dataset = Dataset()
+dataset = dataset.get_gtsrb()
 
 # Separation des ensembles d'apprentissage et de validations
 data = dataset.data[:, np.newaxis, :, :]
@@ -55,7 +55,7 @@ if args["load_model"] < 0:
                   verbose=1)
     else:
         model.fit(trainData, trainLabels, batch_size=128,
-                  nb_epoch=30, verbose=2,
+                  nb_epoch=args["epochs"], verbose=2,
                   validation_data=(testData, testLabels))
 
     # show the accuracy on the testing set

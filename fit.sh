@@ -3,7 +3,7 @@
 output_file="./result.png"
 data_file="./result.data"
 result_file="./result"
-python2 src/main.py > $result_file
+python2 src/main.py -e 10 > $result_file
 
 l=($(grep "val_acc" $result_file | cut -d ' ' -f 13))
 

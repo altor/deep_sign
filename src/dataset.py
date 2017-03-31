@@ -21,19 +21,24 @@ class Dataset:
         self.data = []
         self.label = []
 
-        # Telechargement de l'ensemble s'il n'existe pas
-        if(not os.access(self.dataset_path, os.R_OK)):
-            self.download()
+
 
         # chargement des donnees en memoire
         if(not os.access(self.dataset_hdf_file_name, os.R_OK)):
+            # Telechargement de l'ensemble s'il n'existe pas
+            if(not os.access(self.dataset_path, os.R_OK)):
+                self.download()
             self.extract()
+            self.data = np.asarray(self.data)
+            self.label = np.asarray(self.label)
+            self.save()
+
         else:
             self.load()
 
         # conversion en ndArray
-        self.data = np.asarray(self.data)
-        self.label = np.asarray(self.label)
+
+
 
     def download(self):
         print("[INFO] Download dataset")
