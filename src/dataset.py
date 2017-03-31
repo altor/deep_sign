@@ -60,13 +60,15 @@ class Dataset:
         f = h5py.File(self.dataset_hdf_file_name, "w")
         data_set = f.create_dataset("data", data=self.data)
         label_set = f.create_dataset("label", data=self.label)
+        f.close()
 
 
     def load(self):
         print("[INFO] Load saved dataset")
         f = h5py.File(self.dataset_hdf_file_name,'r')
         self.data = f['data'][()]
-        self.label = f['data'][()]
+        self.label = f['label'][()]
+        f.close()
         
         
     def extract(self, resize=False, size_x=None, size_y=None):
