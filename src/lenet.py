@@ -25,12 +25,12 @@ class LeNet:
                 # fonction d'activation = relu
                 model.add(Activation("relu"))
                 # couche de max-pooling, taille des fenetres : 2x2, pas de deplacement de la fenetre (stride) : 2x2
-                model.add(MaxPooling2D(pool_size=(2, 2), strides=(2, 2)))
+                model.add(MaxPooling2D(pool_size=(2, 2), strides=(2, 2), dim_ordering="th"))
 
 		# second set of CONV => RELU => POOL
                 model.add(Convolution2D(50, 5, 5, border_mode="same"))
                 model.add(Activation("relu"))
-                model.add(MaxPooling2D(pool_size=(2, 2), strides=(2, 2)))
+                model.add(MaxPooling2D(pool_size=(2, 2), strides=(2, 2), dim_ordering="th"))
 
 		# set of FC => RELU layers
                 # ajout d'une "couche" permetant de transformer la sortie de la couche de max-pooling en un unique vecteur

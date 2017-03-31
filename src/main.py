@@ -28,7 +28,7 @@ ap.add_argument("-w", "--weights", type=str,
 args = vars(ap.parse_args())
 
 
-dataset = dataset.get_gtsrb()
+dataset = dataset.get_gtsrb_min()
 
 # Separation des ensembles d'apprentissage et de validations
 data = dataset.data[:, np.newaxis, :, :]
@@ -42,7 +42,7 @@ testLabels = np_utils.to_categorical(testLabels, 43)
 print("[INFO] compiling model")
 opt = SGD(lr=0.01)
 model = LeNet.build(width=28, height=28, depth=1, classes=43,
-    weightsPath=args["weights"] if args["load_model"] > 0 else None)
+                    weightsPath=args["weights"] if args["load_model"] > 0 else None)
 model.compile(loss="categorical_crossentropy", optimizer=opt,
     metrics=["accuracy"])
 
