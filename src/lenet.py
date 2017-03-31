@@ -7,12 +7,12 @@ from keras.layers.core import Flatten
 from keras.layers.core import Dense
 
 class LeNet:
-        # """
-        # The width of our input images.
-        # The height of our input images.
-        # The depth (i.e., number of channels) of our input images.
-        # And the number of classes (i.e., unique number of class labels) in our dataset.
-        # """
+        """
+        The width of our input images.
+        The height of our input images.
+        The depth (i.e., number of channels) of our input images.
+        And the number of classes (i.e., unique number of class labels) in our dataset.
+        """
         @staticmethod
         def build(width, height, depth, classes, weightsPath=None):
 		# initialize the model
