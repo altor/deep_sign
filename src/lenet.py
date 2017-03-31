@@ -20,7 +20,7 @@ class LeNet:
 
 		# first set of CONV => RELU => POOL
                 # la premiere couche est compose de 20 filtres de convolutions de taille 5x5
-                model.add(Convolution2D(20, 5, 5, border_mode="same",
+                model.add(Convolution2D(20, (5, 5), padding="same",
 			                input_shape=(depth, height, width)))
                 # fonction d'activation = relu
                 model.add(Activation("relu"))
