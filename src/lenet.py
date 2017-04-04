@@ -15,7 +15,8 @@ class LeNet:
         """
         @staticmethod
         def build(width, height, depth, classes, weightsPath=None, 
-                  nbConv1=20, conv1size=5, nbConv2=50, conv2size=5):
+                  nbConv1=20, conv1size=5, nbConv2=50, conv2size=5,
+                  activationFun="relu"):
 		# initialize the model
                 model = Sequential()
 
@@ -29,7 +30,7 @@ class LeNet:
 			        input_shape=(depth, height, width))
                 )
                 # fonction d'activation = relu
-                model.add(Activation("relu"))
+                model.add(Activation(activationFun))
                 # couche de max-pooling, taille des fenetres : 2x2, pas de deplacement de la fenetre (stride) : 2x2
                 model.add(
                         MaxPooling2D(
@@ -42,7 +43,7 @@ class LeNet:
                         Convolution2D(nbConv2, conv2size, conv2size,
                                         border_mode="same")
                 )
-                model.add(Activation("relu"))
+                model.add(Activation(activationFun))
                 model.add(
                         MaxPooling2D(pool_size=(2, 2),
                                      strides=(2, 2), dim_ordering="th")
@@ -53,7 +54,7 @@ class LeNet:
                 model.add(Flatten())
                 # couche de 500 neurones completement connecte avec fonction d'activation relu
                 model.add(Dense(500))
-                model.add(Activation("relu"))
+                model.add(Activation(activationFun))
 
 		# softmax classifier
                 # couche de neurone completement connecte avec autant de neurones que de classes
