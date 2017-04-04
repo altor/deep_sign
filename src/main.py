@@ -16,6 +16,14 @@ import helper
 import dataset 
 
 ap = argparse.ArgumentParser()
+ap.add_argument("--nbConv1", type=int, default=20,
+                help="(optional) number of convolution in the first layer")
+ap.add_argument("--szConv1", type=int, default=5,
+                help="(optional) size of receptive field in the first layer")
+ap.add_argument("--nbConv2", type=int, default=50,
+                help="(optional) number of convolution in the second layer")
+ap.add_argument("--szConv2", type=int, default=5,
+                help="(optional) size of receptive field in the second layer")
 ap.add_argument("-e", "--epochs", type=int, default=20,
                 help="(optional) number of training epochs")
 ap.add_argument("-s", "--save-model", type=int, default=-1,
@@ -29,7 +37,7 @@ ap.add_argument("-w", "--weights", type=str,
 args = vars(ap.parse_args())
 
 
-dataset = dataset.get_gtsrb_min()
+dataset = dataset.get_gtsrb()
 
 # Separation des ensembles d'apprentissage et de validations
 data = dataset.data[:, np.newaxis, :, :]
@@ -43,7 +51,10 @@ testLabels = np_utils.to_categorical(testLabels, 43)
 print("[INFO] compiling model")
 opt = SGD(lr=0.01)
 model = LeNet.build(width=28, height=28, depth=1, classes=43,
-                    weightsPath=args["weights"] if args["load_model"] > 0 else None)
+                    weightsPath=args["weights"] if args["load_model"] > 0 else None,
+                    nbConv1=args["nbConv1"], conv1size=args["szConv1"],
+                    nbConv2=args["nbConv2"], conv2size=args["szConv2"]
+)
 model.compile(loss="categorical_crossentropy", optimizer=opt,
     metrics=["accuracy"])
 
