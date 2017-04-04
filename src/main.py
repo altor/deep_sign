@@ -83,20 +83,3 @@ if args["load_model"] < 0:
 if args["save_model"] > 0:
     print("[INFO] dumping weights to file...")
     model.save_weights(args["weights"], overwrite=True)
-
-# randomly select a few testing digits
-for i in np.random.choice(np.arange(0, len(testLabels)), size=(10,)):
-    # classify the digit
-    probs = model.predict(testData[np.newaxis, i])
-    prediction = probs.argmax(axis=1)
-
-    image = (helper.rgb_to_img(testData[i][0] * 255 * 65536)).astype(np.uint8)
-    image = cv2.resize(image, (96, 96), interpolation=cv2.INTER_LINEAR)
-    cv2.putText(image, str(prediction[0]), (5, 20),
-        cv2.FONT_HERSHEY_SIMPLEX, 0.75, (0, 255, 0), 2)
-        
-    # show the image and prediction
-    print("[INFO] Predicted: {}, Actual: {}".format(prediction[0],
-        np.argmax(testLabels[i])))
-    cv2.imshow("Digit", image)
-    cv2.waitKey(0)
