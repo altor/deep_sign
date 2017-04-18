@@ -4,7 +4,7 @@
 
 # import the necessary packages
 from __future__ import division
-from CNNTest import CnnTest
+from CNNTest import CNNTest
 from sklearn.cross_validation import train_test_split
 from keras.optimizers import SGD
 from keras.utils import np_utils
@@ -56,7 +56,7 @@ testLabels = np_utils.to_categorical(testLabels, 43)
 # initialize the optimizer and model
 print("[INFO] compiling model")
 opt = SGD(lr=0.01)
-model = CnnTest.build(width=28, height=28, depth=1, classes=43,
+model = CNNTest.build(width=28, height=28, depth=1, classes=43,
                     weightsPath=args["weights"] if args["load_model"] > 0 else None,
                     nbConv1=args["nbConv1"], conv1size=args["szConv1"],
                     nbConv2=args["nbConv2"], conv2size=args["szConv2"],
