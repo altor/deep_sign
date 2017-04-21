@@ -8,6 +8,7 @@ from lenet import LeNet
 from sklearn.cross_validation import train_test_split
 from keras.optimizers import SGD
 from keras.utils import np_utils
+from keras.callbacks import LambdaCallback
 from scipy import ndimage
 import numpy as np
 import argparse
@@ -18,6 +19,8 @@ import dataset
 ap = argparse.ArgumentParser()
 ap.add_argument("--nbConv1", type=int, default=20,
                 help="(optional) number of convolution in the first layer")
+ap.add_argument("--verbose", type=int, default=0,
+                help="(optional) active verbose mode")
 ap.add_argument("--szConv1", type=int, default=5,
                 help="(optional) size of receptive field in the first layer")
 ap.add_argument("--nbConv2", type=int, default=50,
@@ -39,7 +42,7 @@ ap.add_argument("-w", "--weights", type=str,
 args = vars(ap.parse_args())
 
 
-dataset = dataset.get_gtsrb()
+dataset = dataset.get_gtsrb(verbose=args["verbose"])
 
 # Separation des ensembles d'apprentissage et de validations
 data = dataset.data[:, np.newaxis, :, :]
@@ -50,7 +53,8 @@ trainLabels = np_utils.to_categorical(trainLabels, 43)
 testLabels = np_utils.to_categorical(testLabels, 43)
 
 # initialize the optimizer and model
-print("[INFO] compiling model")
+if args["verbose"] == 1:
+    print("[INFO] compiling model")
 opt = SGD(lr=0.01)
 model = LeNet.build(width=28, height=28, depth=1, classes=43,
                     weightsPath=args["weights"] if args["load_model"] > 0 else None,
@@ -64,20 +68,29 @@ model.compile(loss="categorical_crossentropy", optimizer=opt,
 # only train and evaluate the model if we *are not* loading a
 # pre-existing model
 if args["load_model"] < 0:
-    print("[INFO] training...")
+    if args["verbose"] == 1:
+        print("[INFO] training...")
     if args["converge"] > 0:
-        model.fit(trainData, trainLabels, batch_size=128, nb_epoch=args["epochs"],
-                  verbose=1)
+        # Fonction utilise pour lancer la validation du model apres chaque periode d'apprentissage
+        def f(epochs, logs):
+            (_, accuracy) = model.evaluate(testData, testLabels,batch_size=128, verbose=args["verbose"])
+            print(logs)
+            print("LOG_ACC;"+format(accuracy))
+            
+        model.fit(trainData, trainLabels, batch_size=128, nb_epoch=args["epochs"],verbose=2,
+                  callbacks=[LambdaCallback(on_epoch_end=f)])
+        
     else:
         model.fit(trainData, trainLabels, batch_size=128,
                   nb_epoch=args["epochs"], verbose=2,
                   validation_data=(testData, testLabels))
 
     # show the accuracy on the testing set
-    print("[INFO] evaluating...")
-    (loss, accuracy) = model.evaluate(testData, testLabels,
-        batch_size=128, verbose=1)
-    print("[INFO] accuracy: {:.2f}%".format(accuracy * 100))
+    # print("[INFO] evaluating...")
+    if args["verbose"] == 1:
+        (loss, accuracy) = model.evaluate(testData, testLabels,
+                                          batch_size=128, verbose=1)
+        print("[INFO] accuracy: {:.2f}%".format(accuracy * 100))
 
 # check to see if the model should be saved to file
 if args["save_model"] > 0:

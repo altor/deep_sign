@@ -11,7 +11,7 @@ function launch {
     python2 src/main.py -e $nbEpochs --activationFun $activationFun > $result_file
 
     l=($(grep "val_acc" $result_file | cut -d ' ' -f 13))
-
+    t=($(grep "val_acc" $result_file | cut -d s -f 1))
     for i in $(seq $nbEpochs)
     do
 	echo "$i ${l[$(($i-1))]}" >> $data_file

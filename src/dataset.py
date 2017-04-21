@@ -13,14 +13,14 @@ import helper
 
 class Dataset:
     
-    def __init__(self, dataset_path, dataset_url, dataset_zip_file_name, dataset_hdf_file_name):
+    def __init__(self, dataset_path, dataset_url, dataset_zip_file_name, dataset_hdf_file_name, verbose=0):
         self.dataset_path=dataset_path
         self.dataset_url=dataset_url 
         self.dataset_zip_file_name = dataset_zip_file_name
         self.dataset_hdf_file_name = dataset_hdf_file_name
         self.data = []
         self.label = []
-
+        self.verbose=verbose
 
 
         # chargement des donnees en memoire
@@ -41,7 +41,8 @@ class Dataset:
 
 
     def download(self):
-        print("[INFO] Download dataset")
+        if self.verbose == 1:
+            print("[INFO] Download dataset")
         u = urllib2.urlopen(self.dataset_url)
         f = open(self.dataset_zip_file_name, 'wb')
         block_sz = 8192
@@ -64,7 +65,8 @@ class Dataset:
 
 
     def load(self):
-        print("[INFO] Load saved dataset")
+        if self.verbose == 1:
+            print("[INFO] Load saved dataset")
         f = h5py.File(self.dataset_hdf_file_name,'r')
         self.data = f['data'][()]
         self.label = f['label'][()]
@@ -72,10 +74,12 @@ class Dataset:
         
         
     def extract(self, resize=False, size_x=None, size_y=None):
-        print("[INFO] Extract dataset")
+        if self.verbose == 1:
+            print("[INFO] Extract dataset")
         # parcour l'arboressence du dataset
         for directory in os.listdir(self.dataset_path):
-            print("[INFO] Extract directory : " + directory)
+            if self.verbose == 1:
+                print("[INFO] Extract directory : " + directory)
             class_id = int(directory)
             for img_file in os.listdir(self.dataset_path +
                                        "/" + directory):
@@ -98,18 +102,20 @@ class Dataset:
                 self.label.append(class_id)
 
 
-def get_gtsrb():
+def get_gtsrb(verbose=0):
     return Dataset(
         'GTSRB/Final_Training/Images',
         'http://benchmark.ini.rub.de/Dataset/GTSRB_Final_Training_Images.zip',
         'GTSRB_Final_Training_Images.zip',
-        'GTSRB.hdf5'
+        'GTSRB.hdf5',
+        verbose=verbose
     )
 
-def get_gtsrb_min():
+def get_gtsrb_min(verbose=0):
     return Dataset(
         'GTSRB_min_28/Final_Training/Images',
         'http://benchmark.ini.rub.de/Dataset/GTSRB_Final_Training_Images.zip',
         'GTSRB_Final_Training_Images.zip',
-        'GTSRB_min.hdf5'
+        'GTSRB_min.hdf5',
+        verbose=verbose
     )                
