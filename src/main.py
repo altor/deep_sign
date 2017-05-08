@@ -30,6 +30,8 @@ ap.add_argument("--szConv2", type=int, default=5,
                 help="(optional) size of receptive field in the second layer")
 ap.add_argument("--activationFun", type=str, default="relu",
                 help="(optional) number of convolution in the first layer")
+ap.add_argument("--nbFull", type=int, default=500,
+                help="(optional) number of neurons in the fully-connected layer")
 ap.add_argument("-e", "--epochs", type=int, default=20,
                 help="(optional) number of training epochs")
 ap.add_argument("-s", "--save-model", type=int, default=-1,
@@ -68,7 +70,8 @@ if args["arch"] == "lenet":
         weightsPath=args["weights"] if args["load_model"] > 0 else None,
         nbConv1=args["nbConv1"], conv1size=args["szConv1"],
         nbConv2=args["nbConv2"], conv2size=args["szConv2"],
-        activationFun=args["activationFun"]
+        activationFun=args["activationFun"],
+        nbN=args["nbFull"]
     )
 
 elif args["arch"] == "arch2":
