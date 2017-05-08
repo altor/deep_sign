@@ -5,6 +5,7 @@
 # import the necessary packages
 from __future__ import division
 from lenet import LeNet
+from arch2 import Arch2
 from sklearn.cross_validation import train_test_split
 from keras.optimizers import SGD
 from keras.utils import np_utils
@@ -39,6 +40,9 @@ ap.add_argument("-l", "--load-model", type=int, default=-1,
             help="(optional) whether or not pre-trained model should be loaded")
 ap.add_argument("-w", "--weights", type=str,
             help="(optional) path to weights file")
+
+ap.add_argument("--arch", type=str, default="lenet",
+                help="(optional) architecture used for the network : lenet(default) or arch2")
 args = vars(ap.parse_args())
 
 
@@ -56,12 +60,26 @@ testLabels = np_utils.to_categorical(testLabels, 43)
 if args["verbose"] == 1:
     print("[INFO] compiling model")
 opt = SGD(lr=0.01)
-model = LeNet.build(width=28, height=28, depth=1, classes=43,
-                    weightsPath=args["weights"] if args["load_model"] > 0 else None,
-                    nbConv1=args["nbConv1"], conv1size=args["szConv1"],
-                    nbConv2=args["nbConv2"], conv2size=args["szConv2"],
-                    activationFun=args["activationFun"]
-)
+
+model = None
+if args["arch"] == "lenet":
+    model = LeNet.build(
+        width=28, height=28, depth=1, classes=43,
+        weightsPath=args["weights"] if args["load_model"] > 0 else None,
+        nbConv1=args["nbConv1"], conv1size=args["szConv1"],
+        nbConv2=args["nbConv2"], conv2size=args["szConv2"],
+        activationFun=args["activationFun"]
+    )
+
+elif args["arch"] == "arch2":
+    model = Arch2.build(
+        width=28, height=28, depth=1, classes=43,
+        weightsPath=args["weights"] if args["load_model"] > 0 else None,
+        nbConv1=args["nbConv1"], conv1size=args["szConv1"],
+        nbConv2=args["nbConv2"], conv2size=args["szConv2"],
+        activationFun=args["activationFun"]
+    )
+    
 model.compile(loss="categorical_crossentropy", optimizer=opt,
     metrics=["accuracy"])
 
@@ -96,3 +114,4 @@ if args["load_model"] < 0:
 if args["save_model"] > 0:
     print("[INFO] dumping weights to file...")
     model.save_weights(args["weights"], overwrite=True)
+ 

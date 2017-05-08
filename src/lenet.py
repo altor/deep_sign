@@ -16,7 +16,9 @@ class LeNet:
         @staticmethod
         def build(width, height, depth, classes, weightsPath=None, 
                   nbConv1=20, conv1size=5, nbConv2=50, conv2size=5,
-                  activationFun="relu"):
+                  activationFun="relu", nbN=500):
+
+                print("[INFO] using LeNet")
 		# initialize the model
                 model = Sequential()
 
@@ -53,7 +55,7 @@ class LeNet:
                 # ajout d'une "couche" permetant de transformer la sortie de la couche de max-pooling en un unique vecteur
                 model.add(Flatten())
                 # couche de 500 neurones completement connecte avec fonction d'activation relu
-                model.add(Dense(500))
+                model.add(Dense(nbN))
                 model.add(Activation(activationFun))
 
 		# softmax classifier
