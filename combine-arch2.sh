@@ -29,7 +29,7 @@ nbFull=450
 arch="lenet"
 for i in $(seq 50)
 do
-    launch "lenet$i.data" $nbConv1 $nbConv2 $szConv $fun $nbFull
+    launch "lenet$i.data" $nbConv1 $nbConv2 $szConv $fun $nbFull $arch
 done
 
 nbConv1=50
