@@ -55,10 +55,10 @@ data = dataset.data[:, np.newaxis, :, :]
 trainData, testData, trainLabels, testLabels = None, None, None, None
 
 # Si l'on cherche juste a entrainer le réseau on ne sépare pas les données d'apprentissage des données de test
-if args["save-model"] == 1:
-    trainData = data / (65536 * 255)
-    trainLabel = np_utils.to_categorical(dataset.label.astype("int"), 43)
-else:
+# if args["save-model"] == 1:
+#     trainData = data / (65536 * 255)
+#     trainLabel = np_utils.to_categorical(dataset.label.astype("int"), 43)
+# else:
     (trainData, testData, trainLabels, testLabels) = train_test_split(
         data / (65536 * 255), dataset.label.astype("int"), test_size=0.33)
     trainLabels = np_utils.to_categorical(trainLabels, 43)
