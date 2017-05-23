@@ -66,6 +66,7 @@ class LeNet:
 		# if a weights path is supplied (inicating that the model was
 		# pre-trained), then load the weights
                 if weightsPath is not None:
+                        print("[INFO] using predefined weights")
                         model.load_weights(weightsPath)
 
 		# return the constructed network architecture

@@ -9,8 +9,6 @@ import zipfile
 import helper
 
 
-
-
 class Dataset:
     
     def __init__(self, dataset_path, dataset_url, dataset_zip_file_name, dataset_hdf_file_name, verbose=0):
@@ -102,6 +100,77 @@ class Dataset:
                 self.label.append(class_id)
 
 
+class ValidationDataset:
+        def __init__(self, dataset_path, dataset_hdf_file_name, verbose=0):
+            
+            self.dataset_path=dataset_path
+            self.dataset_hdf_file_name = dataset_hdf_file_name
+            self.data = []
+            self.names = []
+            self.verbose=verbose
+            
+            if(not os.access(self.dataset_hdf_file_name, os.R_OK)):
+                self.extract()
+                self.data = np.asarray(self.data)
+                self.names = np.asarray(self.names)
+                self.save()
+
+            else:
+                self.load()
+
+        def save(self):
+            f = h5py.File(self.dataset_hdf_file_name, "w")
+            data_set = f.create_dataset("data", data=self.data)
+            names_set = f.create_dataset("names", data=self.names)
+            f.close()
+
+        def load(self):
+            if self.verbose == 1:
+                print("[INFO] Load saved dataset")
+            f = h5py.File(self.dataset_hdf_file_name,'r')
+            self.data = f['data'][()]
+            self.names = f['names'][()]
+            f.close()
+
+        def extract(self, resize=False, size_x=None, size_y=None):
+            if self.verbose == 1:
+                print("[INFO] Extract dataset")
+                # parcour l'arboressence du dataset
+            for img_file in os.listdir(self.dataset_path):
+                if self.verbose == 1:
+                    print(self.dataset_path + '/' + img_file)
+                # On verifie que l'image n'est pas le csv de description de la classe
+
+
+                # extraction des donnees de l'image
+                img = cv2.imread(self.dataset_path + "/" + img_file,
+                                 cv2.IMREAD_COLOR)
+
+                # On convertie l'image pour n'avoir qu'une valeur par pixle au lieu d'un triplet
+                img = helper.img_to_rgb(img)
+
+                # Ajout de l'image au dataset
+                self.data.append(img)
+                self.names.append(img_file)
+
+                # Ajout de la classe de l'image au dataset
+
+def loadValidation(verbose=0, path='GTSRB_test.hdf5'):
+    return ValidationDataset(
+        '../GTSRB/Final_Test/Images',
+        path,
+        verbose=verbose
+    )
+                
+def load(verbose=0, path='GTSRB.hdf5'):
+    return Dataset(
+        'GTSRB/Final_Training/Images',
+        'http://benchmark.ini.rub.de/Dataset/GTSRB_Final_Training_Images.zip',
+        'GTSRB_Final_Training_Images.zip',
+        path,
+        verbose=verbose
+    )
+                
 def get_gtsrb(verbose=0):
     return Dataset(
         'GTSRB/Final_Training/Images',

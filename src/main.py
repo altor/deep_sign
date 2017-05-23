@@ -45,20 +45,39 @@ ap.add_argument("-w", "--weights", type=str,
 
 ap.add_argument("--arch", type=str, default="lenet",
                 help="(optional) architecture used for the network : lenet(default) or arch2")
+
+ap.add_argument("--data", type=str, default="GTSRB.hdf5",
+                help="(optional) path to dataset")
+
+ap.add_argument("-v", "--validate", type=int, default=-1,
+                help="(optional) validation on data passed on arguments and produce a GTSRB contest output")
+
+ap.add_argument("--validate2", type=int, default=-1,
+                help="(optional) validation on data passed on arguments")
+
 args = vars(ap.parse_args())
 
+if args["validate"] == 1:
+    dataset = dataset.loadValidation(verbose=args["verbose"], path=args["data"])
+else:
+    dataset = dataset.load(verbose=args["verbose"], path=args["data"])
 
-dataset = dataset.get_gtsrb(verbose=args["verbose"])
+# dataset.get_gtsrb()
 
 # Separation des ensembles d'apprentissage et de validations
 data = dataset.data[:, np.newaxis, :, :]
 trainData, testData, trainLabels, testLabels = None, None, None, None
 
-# Si l'on cherche juste a entrainer le réseau on ne sépare pas les données d'apprentissage des données de test
-# if args["save-model"] == 1:
-#     trainData = data / (65536 * 255)
-#     trainLabel = np_utils.to_categorical(dataset.label.astype("int"), 43)
-# else:
+# Si l'on cherche juste a entrainer le reseau on ne separe pas les donnees d'apprentissage des donnees de test
+if args["save_model"] == 1:
+    trainData = data / (65536 * 255)
+    trainLabels = np_utils.to_categorical(dataset.label.astype("int"), 43)
+if args["validate"] == 1:
+    testData = data / (65536 * 255)
+elif args["validate2"] == 1:
+    testData = data / (65536 * 255)
+    testLabels = np_utils.to_categorical(dataset.label.astype("int"), 43)
+else:
     (trainData, testData, trainLabels, testLabels) = train_test_split(
         data / (65536 * 255), dataset.label.astype("int"), test_size=0.33)
     trainLabels = np_utils.to_categorical(trainLabels, 43)
@@ -107,10 +126,10 @@ if args["load_model"] < 0:
         model.fit(trainData, trainLabels, batch_size=128, nb_epoch=args["epochs"],verbose=2,
                   callbacks=[LambdaCallback(on_epoch_end=f)])
         
-    elif args["save-model"] == 1:
+    elif args["save_model"] == 1:
+        print(str(trainLabels.shape))
         model.fit(trainData, trainLabels, batch_size=128,
-                  nb_epoch=args["epochs"], verbose=2,
-                  validation_data=(testData, testLabels))
+                  nb_epoch=args["epochs"], verbose=2, validation_data=None)
     else:
         model.fit(trainData, trainLabels, batch_size=128,
                   nb_epoch=args["epochs"], verbose=2,
@@ -118,13 +137,18 @@ if args["load_model"] < 0:
 
     # show the accuracy on the testing set
     # print("[INFO] evaluating...")
-    if args["verbose"] == 1:
-        (loss, accuracy) = model.evaluate(testData, testLabels,
-                                          batch_size=128, verbose=1)
-        print("[INFO] accuracy: {:.2f}%".format(accuracy * 100))
+if args["validate2"] == 1:
+    (loss, accuracy) = model.evaluate(testData, testLabels,batch_size=128, verbose=1)
+    print("[INFO] accuracy: {:.2f}%".format(accuracy * 100))
 
 # check to see if the model should be saved to file
 if args["save_model"] > 0:
     print("[INFO] dumping weights to file...")
     model.save_weights(args["weights"], overwrite=True)
- 
+
+if args["validate"] == 1:
+    result = model.predict(testData, batch_size=32, verbose=2).tolist()
+    # print(result[1])
+    for i in range(len(result)):
+        print(dataset.names[i] + ';' + str(result[i].index(max(result[i])) + 1))
+    
